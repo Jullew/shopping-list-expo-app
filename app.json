@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "zadanie-1---aplikacje-mobilne-julian-lewandowski",
+    "slug": "snack-bd7b7e89-0a6f-4d7d-acd4-b6c14c1cec8c",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shoppinglist"
+    },
+    "android": {
+      "package": "com.shoppinglist",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+      
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5e2cdf4d-8b6d-4c91-b731-abebc4a35b11"
+      }
+    }
+  }
+}
