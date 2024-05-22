@@ -1,20 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, Text, Alert, ScrollView } from 'react-native';
-import ProductContext from '../contexts/ProductContext'; // Import kontekstu produktu
-import { useNavigation, useRoute } from '@react-navigation/native';
+import ProductContext from "../contexts/ProductContext";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const AddProductScreen = () => {
-  const [newProductName, setNewProductName] = useState('');
-  const [selectedSection, setSelectedSection] = useState('');
-  const [customSection, setCustomSection] = useState('');
-  const [price, setPrice] = useState('');
-  const [store, setStore] = useState('');
-  const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [newProductName, setNewProductName] = useState("");
+  const [selectedSection, setSelectedSection] = useState("");
+  const [customSection, setCustomSection] = useState("");
+  const [price, setPrice] = useState("");
+  const [store, setStore] = useState("");
+  const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { addNewProduct, products } = useContext(ProductContext); // Uzyskanie dostępu do funkcji addNewProduct z kontekstu
+  const { addNewProduct, products } = useContext(ProductContext);
 
   useEffect(() => {
     if (route.params?.section) {
@@ -25,19 +25,33 @@ const AddProductScreen = () => {
   const handleAddProduct = () => {
     const finalSection = customSection || selectedSection;
 
-    if (!newProductName || !finalSection || !price || !store || !description || !imageUrl) {
-      Alert.alert('Błąd', 'Wszystkie pola muszą być wypełnione.');
+    if (
+      !newProductName ||
+      !finalSection ||
+      !price ||
+      !store ||
+      !description ||
+      !imageUrl
+    ) {
+      Alert.alert("Błąd", "Wszystkie pola muszą być wypełnione.");
       return;
     }
-    
-    const productDetails = { newProductName, selectedSection: finalSection, price, store, description, imageUrl };
+
+    const productDetails = {
+      newProductName,
+      selectedSection: finalSection,
+      price,
+      store,
+      description,
+      imageUrl,
+    };
     addNewProduct(productDetails);
-    
-    navigation.goBack(); 
-    Alert.alert('Sukces', 'Produkt został dodany.');
+
+    navigation.goBack();
+    Alert.alert("Sukces", "Produkt został dodany.");
   };
 
-  const sectionOptions = products.map(section => section.title);
+  const sectionOptions = products.map((section) => section.title);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -52,10 +66,20 @@ const AddProductScreen = () => {
         {sectionOptions.map((section, index) => (
           <TouchableOpacity
             key={index}
-            style={[styles.sectionButton, selectedSection === section && styles.selectedSectionButton]}
+            style={[
+              styles.sectionButton,
+              selectedSection === section && styles.selectedSectionButton,
+            ]}
             onPress={() => setSelectedSection(section)}
           >
-            <Text style={[styles.sectionButtonText, selectedSection === section && styles.selectedSectionButtonText]}>{section}</Text>
+            <Text
+              style={[
+                styles.sectionButtonText,
+                selectedSection === section && styles.selectedSectionButtonText,
+              ]}
+            >
+              {section}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>

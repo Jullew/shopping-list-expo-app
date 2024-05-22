@@ -6,7 +6,13 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
-  const { products, setProducts, removeProduct, togglePurchased, filterProducts, sortProducts } = useContext(ProductContext);
+  const {
+    products,
+    removeProduct,
+    togglePurchased,
+    filterProducts,
+    sortProducts,
+  } = useContext(ProductContext);
   const [filterPriceMin, setFilterPriceMin] = useState("");
   const [filterPriceMax, setFilterPriceMax] = useState("");
   const [filterStore, setFilterStore] = useState("");
@@ -16,31 +22,36 @@ const HomeScreen = () => {
   const navigation = useNavigation();
 
   const navigateToAddProduct = (section) => {
-    navigation.navigate('AddProduct', { section });
+    navigation.navigate("AddProduct", { section });
   };
 
   const navigateToProductDetails = (product) => {
-    navigation.navigate('ProductDetails', { product });
+    navigation.navigate("ProductDetails", { product });
   };
 
   const handleFilter = () => {
-    if (!filterPriceMin && !filterPriceMax && !filterStore) {
-      Alert.alert("Brak kryteriów filtrowania", "Musisz podać przynajmniej jedno z kryteriów filtrowania.");
-      return;
-    }
-    const filtered = filterProducts(products, parseFloat(filterPriceMin), parseFloat(filterPriceMax), filterStore);
+    const minPrice = parseFloat(filterPriceMin) || 0;
+    const maxPrice = parseFloat(filterPriceMax) || Infinity;
+    const filtered = filterProducts(products, minPrice, maxPrice, filterStore);
     setFilteredProducts(filtered);
     setFilterModalVisible(false);
   };
 
   const handleLogout = () => {
-    navigation.replace('Login');
+    navigation.replace("Login");
   };
 
   useEffect(() => {
-    const filtered = filterProducts(products, parseFloat(filterPriceMin), parseFloat(filterPriceMax), filterStore);
+    const minPrice = parseFloat(filterPriceMin) || 0;
+    const maxPrice = parseFloat(filterPriceMax) || Infinity;
+    const filtered = filterProducts(products, minPrice, maxPrice, filterStore);
     setFilteredProducts(filtered);
   }, [products, filterPriceMin, filterPriceMax, filterStore]);
+
+  const handleSortPurchased = () => {
+    const sorted = sortProducts(filteredProducts);
+    setFilteredProducts(sorted);
+  };
 
   return (
     <View style={styles.container}>
@@ -48,7 +59,10 @@ const HomeScreen = () => {
         <Ionicons name="log-out-outline" size={24} color="#fff" />
       </TouchableOpacity>
       {products.length === 0 && (
-        <TouchableOpacity onPress={() => navigateToAddProduct(null)} style={styles.addButton}>
+        <TouchableOpacity
+          onPress={() => navigateToAddProduct(null)}
+          style={styles.addButton}
+        >
           <Ionicons name="add-circle-outline" size={24} color="#fff" />
         </TouchableOpacity>
       )}
@@ -57,11 +71,16 @@ const HomeScreen = () => {
           sections={filteredProducts}
           keyExtractor={(item, index) => item.id + index}
           renderItem={({ item, section }) => (
-            <TouchableOpacity onPress={() => navigateToProductDetails(item)} style={styles.productItem}>
+            <TouchableOpacity
+              onPress={() => navigateToProductDetails(item)}
+              style={styles.productItem}
+            >
               <ProductItem
                 product={item}
                 onRemove={() => removeProduct(item.id, section.title)}
-                onTogglePurchased={() => togglePurchased(item.id, section.title)}
+                onTogglePurchased={() =>
+                  togglePurchased(item.id, section.title)
+                }
               />
             </TouchableOpacity>
           )}
@@ -75,7 +94,10 @@ const HomeScreen = () => {
           )}
         />
       </View>
-      <TouchableOpacity style={styles.filterButton} onPress={() => setFilterModalVisible(true)}>
+      <TouchableOpacity
+        style={styles.filterButton}
+        onPress={() => setFilterModalVisible(true)}
+      >
         <Text style={styles.filterButtonText}>Filtry</Text>
       </TouchableOpacity>
       <Modal
@@ -110,16 +132,28 @@ const HomeScreen = () => {
             <TouchableOpacity style={styles.button} onPress={handleFilter}>
               <Text style={styles.buttonText}>Filtruj</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.clearButton]} onPress={() => {
-              setFilterPriceMin("");
-              setFilterPriceMax("");
-              setFilterStore("");
-              setFilteredProducts(products);
-              setFilterModalVisible(false);
-            }}>
+            <TouchableOpacity
+              style={[styles.button, styles.clearButton]}
+              onPress={() => {
+                setFilterPriceMin("");
+                setFilterPriceMax("");
+                setFilterStore("");
+                setFilteredProducts(products);
+                setFilterModalVisible(false);
+              }}
+            >
               <Text style={styles.buttonText}>Wyczyść filtry</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.closeButton]} onPress={() => setFilterModalVisible(false)}>
+            <TouchableOpacity
+              style={[styles.button, styles.sortButton]}
+              onPress={handleSortPurchased}
+            >
+              <Text style={styles.buttonText}>Sortuj po kupionych</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.closeButton]}
+              onPress={() => setFilterModalVisible(false)}
+            >
               <Text style={styles.buttonText}>Zamknij</Text>
             </TouchableOpacity>
           </View>
@@ -132,7 +166,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingTop: 50,
   },
   sectionContainer: {
@@ -141,100 +175,103 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
     padding: 10,
     borderRadius: 10,
     marginVertical: 5,
   },
   headerText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   productItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
     borderRadius: 10,
     marginVertical: 5,
   },
   logoutButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
-    backgroundColor: '#ff0000',
+    backgroundColor: "#ff0000",
     padding: 10,
     borderRadius: 10,
     zIndex: 1,
   },
   addButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     left: 10,
-    backgroundColor: '#6200ee',
+    backgroundColor: "#6200ee",
     padding: 10,
     borderRadius: 10,
     zIndex: 1,
   },
   filterButton: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 10,
-    left: '50%',
+    left: "50%",
     transform: [{ translateX: -50 }],
-    backgroundColor: '#6200ee',
+    backgroundColor: "#6200ee",
     padding: 10,
     borderRadius: 10,
   },
   filterButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
   modalTitle: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 5,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: '#6200ee',
+    backgroundColor: "#6200ee",
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 5,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
   clearButton: {
-    backgroundColor: '#ff9800',
+    backgroundColor: "#ff9800",
   },
   closeButton: {
-    backgroundColor: '#ff0000',
+    backgroundColor: "#ff0000",
+  },
+  sortButton: {
+    backgroundColor: "#4caf50",
   },
 });
 

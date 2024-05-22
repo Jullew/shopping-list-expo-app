@@ -8,11 +8,11 @@ export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const q = query(collection(db, 'products'));
+    const q = query(collection(db, "products"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const productsData = snapshot.docs.map(doc => ({
+      const productsData = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
       const groupedProducts = groupProductsBySection(productsData);
       setProducts(groupedProducts);
@@ -23,11 +23,11 @@ export const ProductProvider = ({ children }) => {
 
   const groupProductsBySection = (products) => {
     const sections = {};
-    products.forEach(product => {
+    products.forEach((product) => {
       if (!sections[product.selectedSection]) {
         sections[product.selectedSection] = {
           title: product.selectedSection,
-          data: []
+          data: [],
         };
       }
       sections[product.selectedSection].data.push(product);
@@ -36,7 +36,14 @@ export const ProductProvider = ({ children }) => {
   };
 
   const addNewProduct = async (productDetails) => {
-    const { newProductName, selectedSection, price, store, description, imageUrl } = productDetails;
+    const {
+      newProductName,
+      selectedSection,
+      price,
+      store,
+      description,
+      imageUrl,
+    } = productDetails;
     const newProduct = {
       name: newProductName,
       selectedSection,
@@ -44,17 +51,17 @@ export const ProductProvider = ({ children }) => {
       store,
       purchased: false,
       description,
-      imageUrl
+      imageUrl,
     };
-    await addDoc(collection(db, 'products'), newProduct);
+    await addDoc(collection(db, "products"), newProduct);
   };
 
   const removeProduct = async (productId) => {
-    await deleteDoc(doc(db, 'products', productId));
+    await deleteDoc(doc(db, "products", productId));
   };
 
   const togglePurchased = async (productId) => {
-    const productRef = doc(db, 'products', productId);
+    const productRef = doc(db, "products", productId);
     const productSnap = await getDoc(productRef);
     if (productSnap.exists()) {
       const currentPurchasedStatus = productSnap.data().purchased;
@@ -64,35 +71,45 @@ export const ProductProvider = ({ children }) => {
 
   const filterProducts = (products, minPrice, maxPrice, store) => {
     if (!products) return [];
-    return products.map(section => ({
-      ...section,
-      data: section.data.filter(product => {
-        const price = parseFloat(product.price);
-        const isPriceValid = (!minPrice || price >= minPrice) && (!maxPrice || price <= maxPrice);
-        const isStoreValid = !store || product.store.toLowerCase().includes(store.toLowerCase());
-        return isPriceValid && isStoreValid;
-      })
-    }));
+
+    return products
+      .map((section) => ({
+        ...section,
+        data: section.data.filter((product) => {
+          const price = parseFloat(product.price);
+          const isPriceValid =
+            (!minPrice || price >= minPrice) &&
+            (!maxPrice || price <= maxPrice);
+          const isStoreValid =
+            !store || product.store.toLowerCase().includes(store.toLowerCase());
+          return isPriceValid && isStoreValid;
+        }),
+      }))
+      .filter((section) => section.data.length > 0); // Filter out empty sections
   };
 
   const sortProducts = (products) => {
     if (!products) return [];
-    return products.map(section => {
-      const sortedData = section.data.sort((a, b) => a.purchased === b.purchased ? 0 : a.purchased ? 1 : -1);
+    return products.map((section) => {
+      const sortedData = section.data.sort((a, b) =>
+        a.purchased === b.purchased ? 0 : a.purchased ? 1 : -1
+      );
       return { ...section, data: sortedData };
     });
   };
 
   return (
-    <ProductContext.Provider value={{
-      products,
-      setProducts,
-      addNewProduct,
-      removeProduct,
-      togglePurchased,
-      filterProducts,
-      sortProducts
-    }}>
+    <ProductContext.Provider
+      value={{
+        products,
+        setProducts,
+        addNewProduct,
+        removeProduct,
+        togglePurchased,
+        filterProducts,
+        sortProducts,
+      }}
+    >
       {children}
     </ProductContext.Provider>
   );

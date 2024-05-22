@@ -1,6 +1,7 @@
 {
   "expo": {
-    "name": "zadanie-1---aplikacje-mobilne-julian-lewandowski",
+    "name": "Shopping List",
+    "author": "Julian Lewandowski",
     "slug": "snack-bd7b7e89-0a6f-4d7d-acd4-b6c14c1cec8c",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -11,9 +12,8 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "platforms": ["ios", "android", "web"],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.shoppinglist"
@@ -24,7 +24,6 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
-      
     },
     "web": {
       "favicon": "./assets/favicon.png"

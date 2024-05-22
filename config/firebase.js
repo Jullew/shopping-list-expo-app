@@ -1,16 +1,17 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import {FIREBASE_APIKEY, FIREBASE_AUTHDOMAIN, FIREBASE_PROJECTID, FIREBASE_STORAGEBUCKET, FIREBASE_MESSAGINGSENDERID, FIREBASE_APPID} from "@env"
+// import {FIREBASE_APIKEY, FIREBASE_AUTHDOMAIN, FIREBASE_PROJECTID, FIREBASE_STORAGEBUCKET, FIREBASE_MESSAGINGSENDERID, FIREBASE_APPID} from "@env"
+
 
 
 const firebaseConfig = {
-  apiKey: FIREBASE_APIKEY,
-  authDomain: FIREBASE_AUTHDOMAIN,
-  projectId: FIREBASE_PROJECTID,
-  storageBucket: FIREBASE_STORAGEBUCKET,
-  messagingSenderId: FIREBASE_MESSAGINGSENDERID,
-  appId: FIREBASE_APPID
+  apiKey: "AIzaSyBh5RyxSbwzbX4FSGqQt4sWkzFJtTFPY_0",
+  authDomain: "lista-zakupow-7be82.firebaseapp.com",
+  projectId: "lista-zakupow-7be82",
+  storageBucket: "lista-zakupow-7be82.appspot.com",
+  messagingSenderId: "559391782854",
+  appId: "1:559391782854:web:d026c2e96843b23d9664c7"
 };
 
 const app = initializeApp(firebaseConfig);
